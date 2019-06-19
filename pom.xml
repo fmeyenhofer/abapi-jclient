@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>25.0.0</version>
+		<relativePath />
+	</parent>
+
+
+	<packaging>jar</packaging>
+	<groupId>ch.aba</groupId>
+	<artifactId>abapi-jclient</artifactId>
+	<version>0.0.10-SNAPSHOT</version>
+
+	<properties>
+		<package-name>ch.aba.jclient</package-name>
+		<main-class>AllenBrainAtlasRESTfulClient</main-class>
+		<scijava.jvm.version>1.8</scijava.jvm.version>
+		<license.copyrightOwners>Felix Meyenhofer</license.copyrightOwners>
+		<license.licenseName>GPLv2</license.licenseName>
+
+		<json.version>20160212</json.version>
+	</properties>
+	
+	<name>allen-brain-api-java-client</name>
+    <description>
+		Java client for the Allen Brain RESTful API
+	</description>
+
+	<url>https://www.unifr.ch/bioimage</url>
+	<inceptionYear>2019</inceptionYear>
+	<organization>
+		<name>University of Fribourg</name>
+        <url>www.unifr.ch</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>GPL2</name>
+			<url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
+			<distribution>GNU General Public License, version 2</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>f.meyenhofer</id>
+			<name>Felix Meyenhofer</name>
+			<email>f.meyenhofer@me.com</email>
+			<url>https://github.com/fmeyenhofer</url>
+			<timezone>+2</timezone>
+			<roles>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<contributors>
+        <contributor>
+			<name>Felix Meyenhofer</name>
+		</contributor>
+	</contributors>
+
+	<scm>
+		<connection>https://github.com/fmeyenhofer</connection>
+		<developerConnection>https://github.com/fmeyenhofer</developerConnection>
+        <tag>HEAD</tag>
+		<url>https://github.com/fmeyenhofer/abapi-jclient</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/fmeyenhofer/abapi-jclient/issues</url>
+	</issueManagement>
+
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net</archive>
+		</mailingList>
+	</mailingLists>
+
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2</artifactId>
+		</dependency>
+		
+		<!--SVG format library-->
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-dom</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-svg-dom</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-swing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-transcoder</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-i18n</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-constants</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>xmlgraphics-commons</artifactId>
+		</dependency>
+
+		<!--XML library-->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+		</dependency>
+
+		<!--JSON library-->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+		</dependency>
+	</dependencies>
+</project>
