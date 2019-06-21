@@ -185,7 +185,7 @@ public class AllenCache extends StatusBroadcaster {
         File[] responses = path.getParentFile().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.contains(pattern);
+                return name.startsWith(pattern);
             }
         });
 
