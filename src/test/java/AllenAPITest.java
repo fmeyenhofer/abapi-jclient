@@ -10,7 +10,6 @@ import java.net.URL;
 
 /**
  * @author Felix Meyenhofer
- * created: 19.06.19.
  */
 public class AllenAPITest {
 
@@ -19,16 +18,14 @@ public class AllenAPITest {
         URL adjusted = AllenAPI.RMA.adjustResponseSize(query);
         AllenXml xml = new AllenXml(adjusted);
 
-        String filename = AllenAPI.RMA.url2filename(xml.getUrl());
-        URL url = AllenAPI.RMA.filename2url(filename);
+        String filename = AllenAPI.RMA.url2filename(xml.getUrl().toString());
 
         System.out.println("URL handling");
         System.out.println("\toriginal url: " + query.toString());
         System.out.println("\tmodel: " + xml.getResponseModel());
         System.out.println("\tresponse size: " + xml.getResponseSize());
         System.out.println("\tadjusted url: " + xml.getUrl());
-        System.out.println("\tfile name: " + filename);
-        System.out.println("\trestored url: " + url.toString());
+        System.out.println("\tcache file name: " + filename);
 
         System.out.println("Mouse products: ");
         for (Element product : xml.getElements()) {

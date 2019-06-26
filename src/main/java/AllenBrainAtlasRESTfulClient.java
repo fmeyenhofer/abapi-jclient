@@ -43,10 +43,10 @@ import java.util.regex.Pattern;
 public class AllenBrainAtlasRESTfulClient extends StatusBroadcaster {
 
     /** Singleton instance of the class */
-    private static AllenBrainAtlasRESTfulClient singleton = new AllenBrainAtlasRESTfulClient();
+    private static AllenBrainAtlasRESTfulClient singleton;
 
     /** Local cache for atlas data */
-    protected AllenCache cache = new AllenCache();
+    AllenCache cache;
 
     /** Pattern for "[name] ([id])" strings */
     private static Pattern pattern = Pattern.compile("(.*)(\\d+)\\)$");
@@ -55,9 +55,15 @@ public class AllenBrainAtlasRESTfulClient extends StatusBroadcaster {
     /**
      * Constructor
      */
-    AllenBrainAtlasRESTfulClient() {}
+    AllenBrainAtlasRESTfulClient() throws IOException {
+        this.cache = new AllenCache();
+    }
 
-    public static AllenBrainAtlasRESTfulClient getInstance() {
+    static AllenBrainAtlasRESTfulClient getInstance() throws IOException {
+        if (singleton == null) {
+            singleton = new AllenBrainAtlasRESTfulClient();
+        }
+
         return singleton;
     }
 

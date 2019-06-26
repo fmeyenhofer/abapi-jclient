@@ -4,12 +4,11 @@ import file.AllenImage;
 import file.AllenSvg;
 import file.AllenXml;
 import meta.RefVolAttribute;
-
-import org.jdom2.Element;
 import status.StatusBroadcaster;
 
+import org.jdom2.Element;
+
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
@@ -64,6 +63,9 @@ public class AllenCache extends StatusBroadcaster {
     /** Root directory of the cache */
     private File root;
 
+    /** Lookup of RMA queries and XML result files. */
+    private RmaXmlIndex queryIndex;
+
     /**
      * Organization of the different data types encountered with the
      * {@link AllenAPI}
@@ -96,9 +98,10 @@ public class AllenCache extends StatusBroadcaster {
     /**
      * Constructor
      */
-    public AllenCache() {
+    public AllenCache() throws IOException {
         //TODO put this in the fiji user settings. Use a setting dialog if not defined
         this.root = getDirectory(new File(System.getProperty("user.home"), "allen-cache"));
+        this.queryIndex = new RmaXmlIndex(new File(this.root, "_rma-xml-index.txt"));
     }
 
     /**
@@ -178,25 +181,9 @@ public class AllenCache extends StatusBroadcaster {
      */
     public AllenXml getResponseXml(URL url)
             throws IOException, TransformerException, URISyntaxException {
-        // Try to find the response file in the cache
-        String filename = AllenAPI.RMA.url2filename(url);
-        final String pattern = filename.replaceAll(AllenAPI.RMA.FILE_EXTENSION, "");
+        url = AllenAPI.RMA.adjustResponseSize(url);
+        String filename = queryIndex.getXmlFilename(url.toString());
         File path = getPath(DataType.rma, filename);
-        File[] responses = path.getParentFile().listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith(pattern);
-            }
-        });
-
-        // In case there is no unique match, create the query and download the xml
-        if ((responses != null) && (responses.length == 1)) {
-            path = responses[0];
-        } else {
-            url = AllenAPI.RMA.adjustResponseSize(url);
-            filename = AllenAPI.RMA.url2filename(url);
-            path = getPath(DataType.rma, filename);
-        }
 
         if (path.exists()) {
             return new AllenXml(path);
@@ -245,7 +232,8 @@ public class AllenCache extends StatusBroadcaster {
             } else if (level == 3) {
                 query = AllenAPI.RMA.createSectionImageQuery(path_parts[2]);  //TODO: this is not a general solution for different data models
             } else {
-                throw new IOException("The " + AllenCache.class + "cannot retrieve the metadata for " + path_parts);
+                throw new IOException("The " + AllenCache.class + "cannot retrieve the metadata for "
+                        + Arrays.toString(path_parts));
             }
 
             query = AllenAPI.RMA.adjustResponseSize(query);

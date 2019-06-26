@@ -15,6 +15,7 @@ class AllenBrainAtlasRESTfulClientTest {
             throws TransformerException, IOException, URISyntaxException, InterruptedException {
 
         referenceVolumeDownload();
+        System.out.println("\n\n");
         listProducts();
     }
 
@@ -25,6 +26,7 @@ class AllenBrainAtlasRESTfulClientTest {
         client.addObserver(observer);
 
         AllenImage img = client.getReferenceVolume(RefVolAttribute.Modality.AUTOFLUO, RefVolAttribute.VoxelResolution.FIFTY);
+        Thread.sleep(1500);
         client.setStatus(img.getStatusMessage());
     }
 

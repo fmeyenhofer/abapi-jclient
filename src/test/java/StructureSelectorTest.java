@@ -50,5 +50,8 @@ public class StructureSelectorTest {
         dialog.setVisible(true);
         dialog.toFront();
         dialog.pack();
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        System.exit(0);
     }
 }

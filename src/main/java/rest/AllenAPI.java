@@ -3,6 +3,7 @@ package rest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.UUID;
 
 import javax.xml.transform.TransformerException;
 
@@ -168,103 +169,19 @@ public class AllenAPI {
             return new URL(url.toString() + ARG_OPTIONS + "[num_rows$eq" + numRows + "]");
         }
 
-        public static String url2filename(URL url) throws UnsupportedEncodingException {
-            String str = url.toString();
-            String[] parts = str.split("\\?" + ARG_MODEL.substring(1, ARG_MODEL.length()));
-            String rest = parts[1];
+        public static String url2filename(String url) throws UnsupportedEncodingException {
+            // Split at the beginning of the query
+            String[] parts = url.split("\\?" + ARG_MODEL.substring(1, ARG_MODEL.length()));
 
-            parts = rest.split("((" + ARG_CRITERIA + ")|(" + ARG_INCLUDE + ")|(" + ARG_OPTIONS + "))");
-            String model = parts[0];
-            rest = rest.replace(model, "");
+            // Chop away includes and options
+            parts = parts[1].split("((" + ARG_INCLUDE + ")|(" + ARG_OPTIONS + "))");
 
-            String criteria = "";
-            String include = "";
-            String options = "";
+            String filename = URLDecoder.decode(parts[0], "UTF-8")
+                    .replace(",", "_")
+                    .replaceAll("\\$([a-z]{2})", "-$1-")       // operators (keep them readable)
+                    .replaceAll("[\"'?:%^&#`!*/<>|\\\\]", ""); // remove illegal stuff for filesystems
 
-            if (rest.length() > 1 && rest.contains(ARG_CRITERIA)) {
-                rest = rest.replaceFirst(ARG_CRITERIA, "");
-                parts = rest.split("((" + ARG_INCLUDE + ")|(" + ARG_OPTIONS + "))");
-                criteria = SEPARATOR + "C" +SEPARATOR + AllenAPI.RMA.decodeOperations(parts[0]);
-                rest = rest.replace(parts[0], "");
-            }
-
-            if (rest.length() > 1 && rest.contains(ARG_INCLUDE)) {
-                rest = rest.replaceFirst(ARG_INCLUDE, "");
-                parts = rest.split(ARG_OPTIONS);
-                include = SEPARATOR + "I" +SEPARATOR + parts[0];
-                rest = rest.replace(parts[0], "");
-            }
-
-            if (rest.length() > 1 && rest.contains(ARG_OPTIONS)) {
-                rest = rest.replaceFirst(ARG_OPTIONS, "");
-                options = SEPARATOR + "O" + SEPARATOR + AllenAPI.RMA.decodeOperations(rest);
-            }
-
-            return model + criteria + include + options + FILE_EXTENSION;
-        }
-
-        private static String decodeOperations(String inStr) throws UnsupportedEncodingException {
-            StringBuilder outStr = new StringBuilder();
-
-            for (String criterium: inStr.split(",")) {
-                String[] args = criterium.split("\\$");
-                String lhs = args[0];
-                String ope = args[1].substring(0, 2);
-                String rhs = URLDecoder.decode(args[1].substring(2, args[1].length() - 1), "UTF-8");
-                outStr.append(lhs).append("$").append(ope).append(rhs).append("],");
-            }
-
-            return outStr.substring(0, outStr.length() - 1);
-        }
-
-        public static URL filename2url(String str) throws MalformedURLException, UnsupportedEncodingException {
-            str = str.replace(FILE_EXTENSION, "");
-            String[] parts = str.split(SEPARATOR);
-            String model = ARG_MODEL + parts[0];
-
-            String rest = str.replace(parts[0], "");
-
-            String criteria = "";
-            String options = "";
-            String include = "";
-
-            String sep = SEPARATOR + "C" + SEPARATOR;
-            if (rest.contains(sep)) {
-                rest = rest.replace(sep, "");
-                parts = rest.split(SEPARATOR);
-                criteria += ARG_CRITERIA + AllenAPI.RMA.encodeOperations(parts[0]);
-                rest = rest.replace(parts[0], "");
-            }
-
-            sep = SEPARATOR + "I" + SEPARATOR;
-            if (rest.contains(sep)) {
-                rest = rest.replace(sep, "");
-                parts = rest.split(SEPARATOR);
-                include = parts[0];
-                rest = rest.replace(parts[0], "");
-            }
-
-            sep = SEPARATOR + "O" + SEPARATOR;
-            if (rest.contains(sep)) {
-                rest = rest.replace(sep, "");
-                options += ARG_OPTIONS + AllenAPI.RMA.encodeOperations(rest);
-            }
-
-            return new URL(BASE_URL + SUB_URL + FUN_QUERY + FILE_EXTENSION + model + criteria + include + options);
-        }
-
-        private static String encodeOperations(String inStr) throws UnsupportedEncodingException {
-            StringBuilder outStr = new StringBuilder();
-
-            for (String criterium: inStr.split(",")) {
-                String[] args = criterium.split("\\$");
-                String lhs = args[0];
-                String ope = args[1].substring(0, 2);
-                String rhs = URLEncoder.encode(args[1].substring(2, args[1].length() - 1), "UTF-8");
-                outStr.append(",").append(lhs).append("$").append(ope).append(rhs).append("]");
-            }
-
-            return outStr.toString().substring(1, outStr.length());
+            return filename + "_" + UUID.randomUUID() + FILE_EXTENSION;          // Make the expression unique
         }
     }
 
