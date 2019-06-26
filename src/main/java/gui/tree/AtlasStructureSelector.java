@@ -280,6 +280,7 @@ public class AtlasStructureSelector extends JPanel implements ActionListener {
         dialog.setLocationByPlatform(true);
         dialog.setVisible(true);
         dialog.pack();
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         return tree;
     }
