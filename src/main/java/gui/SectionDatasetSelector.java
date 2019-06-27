@@ -34,10 +34,10 @@ public class SectionDatasetSelector extends JPanel implements ActionListener {
     private JComboBox<String> samplingSelector;
     private JComboBox<String> qualitySelector;
 
-    private SectionDatasetSelector(File cacheDir) {
+    private SectionDatasetSelector(File[] subDirectories) {
         super();
+        this.products = subDirectories;
 
-        products = getSubdirectories(cacheDir);
         String[] productChoices = new String[products.length + 1];
         int i = 0;
         productChoices[i++] = "";
@@ -84,8 +84,14 @@ public class SectionDatasetSelector extends JPanel implements ActionListener {
     }
 
     public static SectionDatasetSelector createAndShow(File cacheDir) {
-        SectionDatasetSelector dialog = new SectionDatasetSelector(cacheDir);
+        File[] subDirs = getSubdirectories(cacheDir);
+        if (subDirs == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not find any SectionDatasets in:\n" + cacheDir.getAbsolutePath());
+            throw new RuntimeException("No SectionsDatasets found in " + cacheDir.getAbsolutePath());
+        }
 
+        SectionDatasetSelector dialog = new SectionDatasetSelector(subDirs);
         JDialog frame = new JDialog();
         frame.setTitle("Select a SectionImage directory");
         frame.add(dialog);
@@ -197,7 +203,7 @@ public class SectionDatasetSelector extends JPanel implements ActionListener {
         }
     }
 
-    private File[] getSubdirectories(File file) {
+    private static File[] getSubdirectories(File file) {
         return file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File item) {
