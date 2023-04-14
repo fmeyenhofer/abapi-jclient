@@ -26,7 +26,7 @@
 		<license.copyrightOwners>Felix Meyenhofer</license.copyrightOwners>
 		<license.licenseName>GPLv2</license.licenseName>
 
-		<json.version>20160212</json.version>
+		<json.version>20230227</json.version>
 	</properties>
 	
 	<name>allen-brain-api-java-client</name>
